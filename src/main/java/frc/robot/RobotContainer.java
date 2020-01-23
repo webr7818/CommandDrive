@@ -7,11 +7,20 @@
 
 package frc.robot;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
+//import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+//import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+//import edu.wpi.first.wpilibj2.command.Command;
+
+import frc.robot.Constants.OIConstants;
+import frc.robot.commands.DefaultDrive;
+import frc.robot.subsystems.DriveSubsystem;
+
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -21,11 +30,22 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final DriveSubsystem roboDrive = new DriveSubsystem();
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  // A chooser for autonomous commands
+  //SendableChooser<Command> m_chooser = new SendableChooser<>();
 
+  // The driver's controller
+  Joystick ps4 = new Joystick(OIConstants.ps4port);
 
+  // Move variable
+  DoubleSupplier move = () -> ps4.getRawAxis(OIConstants.kRightTriggerAxis) - ps4.getRawAxis(OIConstants.kLeftTriggerAxis);
+
+  // Rotate variable
+  DoubleSupplier rotate = () -> ps4.getX(Hand.kLeft);
+
+  // Setting up DefaultDrive
+  DefaultDrive defaultDrive = new DefaultDrive(roboDrive, move, rotate);
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -33,6 +53,14 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+
+    roboDrive.setDefaultCommand(defaultDrive);
+
+    // Add commands to the autonomous command chooser
+    //m_chooser.addOption("@AutonomousCommandName", @AutonomousCommand);
+
+    // Put the chooser on the dashboard
+    //Shuffleboard.getTab("Autonomous").add(m_chooser);
   }
 
   /**
@@ -42,6 +70,7 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    //new JoystickButton(ps4, OIConstants.kSquareButton).whenHeld(command);
   }
 
 
@@ -49,9 +78,11 @@ public class RobotContainer {
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
-   */
+   *
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return m_autoCommand;
   }
+  */
+
 }
